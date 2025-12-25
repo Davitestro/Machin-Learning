@@ -2,13 +2,16 @@ import numpy as np
 
 
 class KNN:
-    def __init__(self, X_train, y_train, k=3):
-        self.X_train = X_train
+    def __init__(self, k=3):
+        self.k = k
+        if self.k <= 0 and self.k % 2 != 0:
+            raise ValueError("k must be a positive integer")
+
+    def fit(self, x_train, y_train):
+        self.X_train = x_train
         self.y_train = y_train
-        if k >=0 and k <= len(y_train) and k % 2 != 0:
-            self.k = k
-        else:
-            raise ValueError("k must be a positive odd integer less than or equal to the number of training samples.")
+        if self.k > len(self.X_train):
+            raise ValueError("k must be less than or equal to the number of training samples")
 
 
     def predict(self, x_test):

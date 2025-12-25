@@ -96,9 +96,7 @@ def generate_multiclass_dataset(num_classes=3, points_per_class=50, spread=0.3, 
 
 def generate_hard_classification(n_samples=5000, noise=0.2):
     """
-    Очень нелинейная задача: XOR + шум.
-    Линейная модель умрёт, дерево — слабовато,
-    ансамбли бустинга/лес — тащат легко.
+    Boosting / Tree
     """
     X = np.random.randn(n_samples, 2)
 
@@ -114,10 +112,7 @@ def generate_hard_classification(n_samples=5000, noise=0.2):
 
 def generate_multi_interactions(n_samples=5000):
     """
-    Лютые взаимодействия между признаками:
-    y зависит от сложной комбинации признаков,
-    которую простые модели вообще не увидят.
-    Random Forest / Boosting — идеально.
+    Random Forest / Boosting.
     """
     X = np.random.randn(n_samples, 5)
 
@@ -136,9 +131,7 @@ def generate_multi_interactions(n_samples=5000):
 
 def generate_fractal_data(n_samples=6000):
     """
-    Супер-сложная фрактальная структура (Псевдо-кантор).
-    Никакая одиночная модель не справится, 
-    только ансамбль деревьев нормально отработает.
+    for ansamble trees
     """
     X = np.random.rand(n_samples, 2)
 
@@ -264,26 +257,64 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 from Ansamble import bagging, boosting, stacking, random_forest
 from SVM import SupportVectorMachine
 from DT import Tree
+from KNN import KNN
+from BLC import BLC
+
 
 
 # X, y = generate_hard_classification(n_samples=2000, noise=0.15)
+# y = np.where(y == 0, -1, 1)  # Convert 0 labels to -1 for SVM compatibility
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # svm_base = lambda: SupportVectorMachine(C=1.0, kernel_name = 'rbf', gamma=0.5)
 # tree_base = lambda: Tree(X_train, y_train, max_depth=5)
 # bagging_model = bagging(base_estimator=svm_base, n_estimators=5)
 
 # bagging_model.fit(X_train, y_train)
+# y_test = np.where(y_test == -1, 0, 1)  # Convert 0 labels to -1 for SVM compatibility
 # evaluate_model("Bagging with SVM", bagging_model, X_test, y_test)
 
 
-X, y = generate_multi_interactions(n_samples=2000)
+# X, y = generate_multi_interactions(n_samples=2000)
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # forest_model = random_forest(n_estimators=10, depth=0, max_depth=5)
 # forest_model.fit(X_train, y_train)
-tree = Tree(x=X_train, y=y_train, depth=0, max_depth=5)
-tree.fit()
+# tree = random_forest(n_estimators=10, depth=0, max_depth=5)
+# tree.fit(X_train, y_train)
 
-evaluate_model("Random Forest", tree, X_test, y_test)
+# evaluate_model("Random Forest", tree, X_test, y_test)
+
+# X,y = generate_multi_interactions()
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# tree_base = lambda: Tree(max_depth=5)
+# boosting_model = boosting(model=tree_base, n_estimators=10)
+# boosting_model.fit(X_train, y_train)
+
+# evaluate_model("Boosting with Decision Trees", boosting_model, X_test, y_test)
+
+# X, y = generate_multi_interactions(n_samples=2000)
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# base_models = [
+#     Tree(max_depth=5),
+#     KNN(k=5),
+#     SupportVectorMachine(C=1.0, kernel_name='rbf', gamma=0.5)
+# ]
+
+# meta_model = BLC()
+
+# stack = stacking(
+#     base_models=base_models,
+#     meta_model=meta_model,
+#     n_folds=5
+# )
+
+# stack.fit(X_train, y_train)
+
+# evaluate_model("Stacking Ensemble", stack, X_test, y_test)
+
 
 """Dataset Visualization"""
 

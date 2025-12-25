@@ -1,7 +1,10 @@
 import numpy as np
 
 class BLC:
-    def __init__(self, x, y):
+    def __init__(self):
+        pass
+
+    def fit(self, x, y):
         self.x = x
         self.y = y
         self.variat = np.unique(y)
@@ -16,7 +19,6 @@ class BLC:
         self.w = mean_pos - mean_neg
 
         self.b = np.dot(self.w, m)
-
     def predict(self, test_data):
         predictions = []
         for sample in test_data:
